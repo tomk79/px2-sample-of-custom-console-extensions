@@ -1,0 +1,39 @@
+{
+    "name": "tomk79/px2-sample-of-custom-console-extensions",
+    "description": "Custom Console Extension の実装例として。",
+    "keywords": ["pickles2"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Tomoya Koyanagi",
+            "email": "tomk79@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "scripts":{
+        "test": [
+            "php ./vendor/phpunit/phpunit/phpunit"
+        ]
+    } ,
+    "repositories": [
+    ],
+    "require": {
+        "php": ">=5.4.0"
+    },
+    "require-dev": {
+        "broccoli-html-editor/broccoli-module-fess": "dev-develop",
+        "broccoli-html-editor/broccoli-module-plain-html-elements": "dev-develop",
+        "pickles2/px-fw-2.x": "~2.0" ,
+        "pickles2/px2-sitemapexcel": "~2.0",
+        "pickles2/px2-multitheme": "~2.0",
+        "pickles2/px2-px2dthelper": "~2.0",
+        "tomk79/filesystem": "~1.0.0",
+        "phpunit/phpunit": "^4.8.0",
+        "phpdocumentor/phpdocumentor": "^2.9.0"
+    },
+    "autoload": {
+        "files": [
+            "php/main.php"
+        ]
+    }
+}
