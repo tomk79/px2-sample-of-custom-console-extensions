@@ -2,7 +2,7 @@
 /**
  * Sample of Custom Console Extensions
  */
-namespace tomk79\pickles2\sampleOfCustoomConsoleExtensions;
+namespace tomk79\pickles2\sampleOfCustomConsoleExtensions;
 
 /**
  * main.php
@@ -12,8 +12,8 @@ class main{
 	/** Picklesオブジェクト */
 	private $px;
 
-	/** px2dthelper */
-	private $px2dthelper;
+	/** cceAgent */
+	private $cceAgent;
 
 	/** Config JSON */
 	private $json;
@@ -23,12 +23,58 @@ class main{
 	 *
 	 * @param object $px $pxオブジェクト
 	 * @param object $json プラグイン設定オブジェクト
-	 * @param object $px2dthelper $px2dthelperオブジェクト
+	 * @param object $cceAgent $cceAgentオブジェクト
 	 */
-	public function __construct( $px, $json, $px2dthelper ){
+	public function __construct( $px, $json, $cceAgent ){
 		$this->px = $px;
 		$this->json = $json;
-		$this->px2dthelper = $px2dthelper;
+		$this->cceAgent = $cceAgent;
+	}
+
+	/**
+	 * 機能拡張の名前を取得する
+	 */
+	public function get_label(){
+		return 'Custom Console Extension 開発サンプル';
+	}
+
+	/**
+	 * 機能拡張のクライアントサイド資材のベースディレクトリパスを取得する
+	 */
+	public function get_client_resource_base_dir(){
+		return __DIR__.'/../dist/';
+	}
+
+	/**
+	 * 機能拡張のクライアントサイド資材一覧を取得する
+	 */
+	public function get_client_resource_list(){
+		$rtn = array();
+		$rtn['css'] = array('sample-of-custom-console-extensions.css');
+		$rtn['js'] = array('sample-of-custom-console-extensions.js');
+		return $rtn;
+	}
+
+	/**
+	 * クライアントサイドの初期化関数名を取得する
+	 */
+	public function get_client_initialize_function(){
+		return 'window.sampleOfCustomConsoleExtensions';
+	}
+
+	/**
+	 * General Purpose Interface
+	 */
+	public function gpi( $request ){
+		switch( $request->command ){
+			case 'test-command':
+				return array(
+					'result' => true,
+					'message' => 'OK',
+				);
+				break;
+		}
+		return false;
 	}
 
 }
