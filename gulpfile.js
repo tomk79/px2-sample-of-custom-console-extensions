@@ -1,3 +1,5 @@
+let conf = require('config');
+// console.log(conf);
 let gulp = require('gulp');
 let webpack = require('webpack');
 let webpackStream = require('webpack-stream');
@@ -64,9 +66,30 @@ gulp.task("sample-of-custom-console-extensions.js", function() {
 	;
 });
 
+
+// *.js を処理
+gulp.task("test/contents.js:js", function() {
+	return gulp.src(["tests/app/client/index_files/contents.src.js"])
+		.pipe(plumber())
+		.pipe(browserify({
+		}))
+		// .pipe(uglify())
+		.pipe(concat('contents.js'))
+		.pipe(gulp.dest( 'tests/app/client/index_files/' ))
+	;
+});
+
+
+// ブラウザを立ち上げてプレビューする
+gulp.task("preview", function(callback) {
+	require('child_process').spawn('open',[conf.origin+'/']);
+	callback();
+});
+
 let _tasks = gulp.parallel(
 	'sample-of-custom-console-extensions.js',
-	'.css.scss'
+	'.css.scss',
+	'test/contents.js:js'
 );
 
 // src 中のすべての拡張子を監視して処理
