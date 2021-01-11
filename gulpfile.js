@@ -94,7 +94,7 @@ let _tasks = gulp.parallel(
 
 // src 中のすべての拡張子を監視して処理
 gulp.task("watch", function() {
-	gulp.watch(["src/**/*"], _tasks);
+	gulp.watch(["src/**/*", "tests/app/client/**/*.src.js"], _tasks);
 });
 
 // src 中のすべての拡張子を処理(default)

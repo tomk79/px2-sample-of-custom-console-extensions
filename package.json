@@ -22,10 +22,12 @@
     "html-loader": "^0.5.5",
     "iterate79": "^1.1.1",
     "jquery": "^3.5.1",
+    "px2agent": "^2.0.6",
     "px2style": "git+https://github.com/pickles2/px2style.git#develop",
     "twig": "^1.15.4",
     "twig-loader": "^0.5.5",
     "url-parse": "^1.4.7",
+    "utils79": "0.0.5",
     "webpack": "^4.39.2",
     "webpack-stream": "^5.2.1"
   }

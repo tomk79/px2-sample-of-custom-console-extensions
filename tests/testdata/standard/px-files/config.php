@@ -435,6 +435,13 @@ return call_user_func( function(){
 		),
 	);
 
+	/**
+	 * CMS画面に追加するカスタム管理画面を登録する
+	 */
+	$conf->plugins->px2dt->custom_console_extensions = array(
+		'sample' => 'tomk79\pickles2\sampleOfCustomConsoleExtensions\main',
+	);
+
 	/** config for GUI Editor. */
 	$conf->plugins->px2dt->guieditor = new stdClass;
 

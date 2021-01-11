@@ -3,6 +3,7 @@
  */
 var conf = require('config');
 var urlParse = require('url-parse');
+var bodyParser = require('body-parser');
 conf.originParsed = new urlParse(conf.origin);
 conf.originParsed.protocol = conf.originParsed.protocol.replace(':','');
 if(!conf.originParsed.port){
@@ -33,7 +34,7 @@ var px2proj = px2agent.createProject(entryScript);
 px2proj.get_config(function(px2conf){
 	// console.log(px2conf);
 
-	app.use( require('body-parser')({"limit": "1024mb"}) );
+	app.use( bodyParser({"limit": "1024mb"}) );
 	var mdlWareSession = session({
 		secret: "pickles2webtool",
 		cookie: {
@@ -41,6 +42,10 @@ px2proj.get_config(function(px2conf){
 		}
 	});
 	app.use( mdlWareSession );
+
+	app.use( '/apis/px2agent', require('./apis/px2agent.js')({
+		'entryScript': entryScript,
+	}) );
 
 	app.use( express.static( __dirname+'/../client/' ) );
 

@@ -1,77 +1,171 @@
 const $ = require('jquery');
-$(window).load(function(){
-	var conf = require('../../../../config/default.json');
-	// console.log(conf);
+const it79 = require('iterate79');
+const utils79 = require('utils79');
+$(window).on('load', function(){
 	var params = parseUriParam(window.location.href);
 	// console.log(params);
 	var $canvas = $('#canvas');
+	var customConsoleExtensionId = 'sample';
+	var px2all;
+	var cceInfo;
 
-	/**
-	* window.resized イベントハンドラ
-	*/
-	var windowResized = function(callback){
-		callback = callback || function(){};
-		$canvas.height( $(window).height() - 200 );
-		callback();
-		return;
-	}
-
-	var pickles2ContentsEditor = new Pickles2ContentsEditor();
-	windowResized(function(){
-		pickles2ContentsEditor.init(
-			{
-				'page_path': params.page_path ,
-				'elmCanvas': $canvas.get(0),
-				'preview':{
-					'origin': conf.px2server.origin
+	it79.fnc({}, [
+		function(it1){
+			// get px2all
+			$.ajax({
+				'url': '/apis/px2agent',
+				'method': 'post',
+				'data': {
+					'PX': 'px2dthelper.get.all',
+					'options': {},
 				},
-				'customFields':{
-					'custom1': function(broccoli){
-						// カスタムフィールドを実装
-					}
-				},
-				'lang': 'ja',
-				'gpiBridge': function(input, callback){
-					// GPI(General Purpose Interface) Bridge
-					// broccoliは、バックグラウンドで様々なデータ通信を行います。
-					// GPIは、これらのデータ通信を行うための汎用的なAPIです。
-					$.ajax({
-						"url": "/apis/px2ce",
-						"type": 'post',
-						'data': {'page_path':params.page_path, 'target_mode':params.target_mode, 'data':JSON.stringify(input)},
-						"success": function(data){
-							// console.log(data);
-							callback(data);
-						}
-					});
-					return;
+				'success': function(res){
+					console.log(res);
+					px2all = res;
 				},
 				'complete': function(){
-					alert('完了しました。');
-				},
-				'onClickContentsLink': function( uri, data ){
-					alert('編集: ' +  uri);
-				},
-				'onMessage': function( message ){
-					console.info('message: '+message);
+					it1.next();
 				}
-			},
-			function(){
+			});
+		},
+		function(it1){
+			// get extension `sample` info.
+			$.ajax({
+				'url': '/apis/px2agent',
+				'method': 'post',
+				'data': {
+					'PX': 'px2dthelper.custom_console_extensions.sample',
+					'options': {},
+				},
+				'success': function(res){
+					console.log(res);
+					cceInfo = res.info;
+				},
+				'complete': function(){
+					it1.next();
+				}
+			});
+		},
+		function(it1){
+			// フロントのリソースを取得
+			$.ajax({
+				'url': '/apis/px2agent',
+				'method': 'post',
+				'data': {
+					'PX': 'px2dthelper.custom_console_extensions.'+customConsoleExtensionId+'.client_resources',
+					'options': {
+						'dist': '../../app/client/client_resources/'
+					},
+				},
+				'success': function(res){
+					console.log(res);
+					if( !res.result ){
+						alert('Undefined Extension. ' + res.message);
+						return;
+					}
+					var resources = res.resources;
 
-				$(window).resize(function(){
-					// このメソッドは、canvasの再描画を行います。
-					// ウィンドウサイズが変更された際に、UIを再描画するよう命令しています。
-					windowResized(function(){
-						pickles2ContentsEditor.redraw();
+					it79.ary(
+						resources.css,
+						function(it2, row, idx){
+							var link = document.createElement('link');
+							link.addEventListener('load', function(){
+								it2.next();
+							});
+							$('head').append(link);
+							link.rel = 'stylesheet';
+							link.href = '/client_resources/'+row;
+						},
+						function(){
+							it79.ary(
+								resources.js,
+								function(it3, row, idx){
+									var script = document.createElement('script');
+									script.addEventListener('load', function(){
+										it3.next();
+									});
+									$('head').append(script);
+									script.src = '/client_resources/'+row;
+								},
+								function(){
+									it1.next();
+								}
+							);
+						}
+					);
+
+				},
+				'complete': function(){
+					// it1.next();
+				}
+			});
+		},
+		function(it1){
+
+			// var watchDir = main.cceWatcher.getWatchDir();
+			// // console.log('watchDir:', watchDir);
+
+			// if(!main.utils.isDirectory(watchDir+'async/'+pj.projectInfo.id+'/')){
+			// 	main.fs.mkdirSync(watchDir+'async/'+pj.projectInfo.id+'/');
+			// }
+			// if(!main.utils.isDirectory(watchDir+'broadcast/'+pj.projectInfo.id+'/')){
+			// 	main.fs.mkdirSync(watchDir+'broadcast/'+pj.projectInfo.id+'/');
+			// }
+
+			px2dthelperCceAgent = new Px2dthelperCceAgent({
+				'elm': $('#canvas').get(0),
+				'lang': 'ja',
+				'appMode': 'web',
+				'gpiBridge': function(input, callback){
+					// GPI(General Purpose Interface) Bridge
+
+					$.ajax({
+						'url': '/apis/px2agent',
+						'method': 'post',
+						'data': {
+							'PX': 'px2dthelper.custom_console_extensions.'+customConsoleExtensionId+'.gpi',
+							'options': {
+								'request': JSON.stringify(input),
+								'appMode': 'web',
+								// 'asyncMethod': 'file',
+								// 'asyncDir': ''+watchDir+'async/',
+								// 'broadcastMethod': 'file',
+								// 'broadcastDir': ''+watchDir+'broadcast/',
+							},
+						},
+						'success': function(res){
+							// console.log('--- returned(millisec)', (new Date()).getTime() - testTimestamp);
+							callback(res);
+						},
+						'complete': function(){
+						}
 					});
-				});
 
-				console.info('standby!!');
-			}
-		);
+					return;
+				}
+			});
+			// pj.onCceBroadcast(function(message){
+			// 	px2dthelperCceAgent.putBroadcastMessage(message);
+			// });
+			it1.next();
 
-	});
-
+		} ,
+		function(it1){
+			// console.log(cceInfo.client_initialize_function+'(px2dthelperCceAgent);');
+			eval(cceInfo.client_initialize_function+'(px2dthelperCceAgent);');
+			it1.next();
+		} ,
+		function(it1){
+			it1.next();
+		},
+		function(it1){
+			it1.next();
+		},
+		function(it1){
+			console.log('standby.');
+			it1.next();
+		}
+	]);
 
 });
 

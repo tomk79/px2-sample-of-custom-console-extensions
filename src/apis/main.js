@@ -1,9 +1,10 @@
 module.exports = function(cceAgent){
+	console.log('Smaple of "Custom Console Extensions" Started.');
+
     const px2style = new (require('px2style'))();
-    const $mainElm = $(cceAgent.elm());
 	const $ = require('jquery');
 	const twig = require('twig');
-	console.log('Smaple of "Custom Console Extensions" Started.');
+    const $mainElm = $(cceAgent.elm());
 
 	var templates = {
 		'index': require('../templates/index.html.twig'),
@@ -20,7 +21,10 @@ module.exports = function(cceAgent){
 	;
 	$body.find('[data-gpi-request]').on('click', function(){
 		var gpiCmd = $(this).attr('data-gpi-request');
-		cceAgent.gpi({'command': gpiCmd});
+		cceAgent.gpi({'command': gpiCmd}, function(res){
+			console.info(res);
+			alert('done');
+		});
 	});
 
 
@@ -32,9 +36,8 @@ module.exports = function(cceAgent){
 		var rtn = '';
 		data = data || {};
 		try {
-			if( templates[tpl] ){
-				tpl = templates[tpl];
-				rtn = tpl(data);
+			if(templates[tpl]){
+				rtn = templates[tpl](data);
 			}else{
 				rtn = new twig.twig({
 					'data': tpl

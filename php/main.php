@@ -88,6 +88,17 @@ class main{
 					'message' => 'OK',
 				);
 				break;
+			case 'pickles2-clearcache';
+				$stdout = $this->px->internal_sub_request(
+					'/?PX=clearcache',
+					array('output' => 'json')
+				);
+				return array(
+					'result' => true,
+					'message' => 'OK',
+					'stdout' => $stdout,
+				);
+				break;
 		}
 		return false;
 	}
