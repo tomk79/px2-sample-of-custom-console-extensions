@@ -10,4 +10,8 @@
 }
 
 .sample-of-custom-console-extensions {
+	&__inner {
+		max-width: 480px;
+		margin: 0 auto;
+	}
 }

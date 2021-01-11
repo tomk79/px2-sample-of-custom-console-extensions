@@ -67,7 +67,22 @@ class main{
 	 */
 	public function gpi( $request ){
 		switch( $request->command ){
-			case 'test-command':
+			case 'async-demo':
+				$this->cceAgent->async(array(
+					'type'=>'gpi',
+					'request' => array(
+						'command' => 'broadcast-demo',
+					),
+				));
+				return array(
+					'result' => true,
+					'message' => 'OK',
+				);
+				break;
+			case 'broadcast-demo':
+				$this->cceAgent->broadcast(array(
+					'message' => 'Welcome! Broadcast!',
+				));
 				return array(
 					'result' => true,
 					'message' => 'OK',

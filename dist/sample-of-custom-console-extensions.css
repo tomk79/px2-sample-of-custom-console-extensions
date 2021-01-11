@@ -1129,3 +1129,7 @@
       margin: 0 0.5rem 1em 0.5rem;
       box-sizing: border-box;
       width: calc( 16.66% - 1rem); } }
+
+.sample-of-custom-console-extensions__inner {
+  max-width: 480px;
+  margin: 0 auto; }

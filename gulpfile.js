@@ -46,6 +46,10 @@ gulp.task("sample-of-custom-console-extensions.js", function() {
 		module:{
 			rules:[
 				{
+					test:/\.twig$/,
+					use:['twig-loader']
+				},
+				{
 					test:/\.html$/,
 					use:['html-loader']
 				}
